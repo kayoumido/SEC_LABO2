@@ -1,5 +1,5 @@
 [package]
-name = "lab02"
+name = "auth"
 version = "0.1.0"
 authors = ["Doran Kayoumi <dorankayoumi@gmail.com>"]
 edition = "2018"
@@ -7,3 +7,9 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+rstest = "0.6.4"
+regex = "1"
+read_input = "0.8"
+lazy_static = "1.4.0"
+google-authenticator = "0.2.0"
+rust-argon2 = "0.8"
