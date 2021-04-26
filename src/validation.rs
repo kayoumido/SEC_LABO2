@@ -18,7 +18,10 @@ pub fn valid_email_format(email: &str) -> bool {
     RE.is_match(email)
 }
 
-pub fn unused_email(email: &str) {}
+pub fn unused_email(email: &str) -> bool {
+    println!("{}", email);
+    true
+}
 
 /// Check if a given password respects the apps password policy
 /// i.e. it's at least 8 characters long and shorter than 64
