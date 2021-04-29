@@ -1,15 +1,14 @@
 #[macro_use]
 extern crate diesel;
-
 extern crate dotenv;
 
 use read_input::prelude::*;
 
-mod db;
-
 #[path = "auth/auth.rs"]
 mod auth;
+mod db;
 mod errors;
+mod utils;
 mod validation;
 
 use auth::{login, register};
@@ -35,27 +34,19 @@ fn ask_for_password() -> String {
 }
 
 fn main() {
-    // let mut database = Vec::<u32>::new();
-
-    let u = db::models::NewUser {
-        email: "dorankayoumi@gmail.com",
-        password: "pass",
-    };
-
-    db::create_user(&u);
-
-    if let Err(e) = db::get_user("ddorankayoumi@gmail.com") {
-        println!("{}", e);
-    }
-
     // println!("{:?}", f);
 
-    if let Err(e) = login("aa", "aa") {
+    if let Err(e) = register("dorankayoumi@gmail.com", "password") {
         println!("{}", e);
     }
 
-    if let Err(e) = register("aa", "bb") {
+    if let Err(e) = login("dorankayoumi@gmail.com", "password") {
         println!("{}", e);
     }
-    println!("Hello, world!");
+
+    if let Err(e) = db::get_user("dorankayoumi@gmail.com") {
+        println!("{}", e);
+    } else {
+        println!("all gucci")
+    }
 }
