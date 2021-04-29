@@ -8,7 +8,7 @@ use regex::{self, Regex};
 ///
 /// * `email` - the &str to check if it's a valid email
 ///
-pub fn valid_email_format(email: &str) -> bool {
+pub fn is_email_valid(email: &str) -> bool {
     lazy_static! {
         static ref RE: Regex =
             Regex::new(r"^[a-zA-Z0-9_]+(?:.[a-zA-Z0-9_-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$")
@@ -18,7 +18,13 @@ pub fn valid_email_format(email: &str) -> bool {
     RE.is_match(email)
 }
 
-pub fn unused_email(email: &str) -> bool {
+/// Check if a given email is already in use by another account
+///
+/// # Arguments
+///
+/// * `email` - the email to check if it's in use
+///
+pub fn is_email_unused(email: &str) -> bool {
     println!("{}", email);
     true
 }
@@ -30,7 +36,7 @@ pub fn unused_email(email: &str) -> bool {
 ///
 /// * `password` - password to check if it respects the policy
 ///
-pub fn valid_password(password: &str) -> bool {
+pub fn is_password_valid(password: &str) -> bool {
     (8..65).contains(&password.len())
 }
 
@@ -52,7 +58,7 @@ mod test {
         ::trace
     )]
     fn test_valid_email_format(input: &str, expected: bool) {
-        assert_eq!(valid_email_format(input), expected);
+        assert_eq!(is_email_valid(input), expected);
     }
 
     #[rstest(
@@ -73,6 +79,6 @@ mod test {
         ::trace
     )]
     fn test_if_password_respects_policy(input: &str, expected: bool) {
-        assert_eq!(valid_password(input), expected);
+        assert_eq!(is_password_valid(input), expected);
     }
 }

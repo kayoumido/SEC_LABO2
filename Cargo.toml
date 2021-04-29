@@ -13,3 +13,7 @@ read_input = "0.8"
 lazy_static = "1.4.0"
 google-authenticator = "0.2.0"
 rust-argon2 = "0.8"
+strum = "0.20.0"
+strum_macros = "0.20"
+diesel = { version = "1.4.4", features = ["sqlite"] }
+dotenv = "0.15.0"

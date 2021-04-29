@@ -25,12 +25,16 @@ checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
 name = "auth"
 version = "0.1.0"
 dependencies = [
+ "diesel",
+ "dotenv",
  "google-authenticator",
  "lazy_static",
  "read_input",
  "regex",
  "rstest",
  "rust-argon2",
+ "strum",
+ "strum_macros",
 ]
 
 [[package]]
@@ -63,6 +67,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "byteorder"
+version = "1.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
+
+[[package]]
 name = "cfg-if"
 version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -92,6 +102,34 @@ dependencies = [
 ]
 
 [[package]]
+name = "diesel"
+version = "1.4.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "047bfc4d5c3bd2ef6ca6f981941046113524b9a9f9a7cbdfdd7ff40f58e6f542"
+dependencies = [
+ "byteorder",
+ "diesel_derives",
+ "libsqlite3-sys",
+]
+
+[[package]]
+name = "diesel_derives"
+version = "1.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "45f5098f628d02a7a0f68ddba586fb61e80edec3bdc1be3b921f4ceec60858d3"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "dotenv"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "77c90badedccf4105eca100756a0b1289e191f6fcbdadd3cee1d2f614f97da8f"
+
+[[package]]
 name = "getrandom"
 version = "0.1.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -116,6 +154,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "heck"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "87cbf45460356b7deeb5e3415b5563308c0a9b057c85e12b06ad551f98d0a6ac"
+dependencies = [
+ "unicode-segmentation",
+]
+
+[[package]]
 name = "hmac-sha1"
 version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -137,6 +184,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9385f66bf6105b241aa65a61cb923ef20efc665cb9f9bb50ac2f0c4b7f378d41"
 
 [[package]]
+name = "libsqlite3-sys"
+version = "0.20.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "64d31059f22935e6c31830db5249ba2b7ecd54fd73a9909286f0a67aa55c2fbd"
+dependencies = [
+ "pkg-config",
+ "vcpkg",
+]
+
+[[package]]
 name = "memchr"
 version = "2.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -147,6 +204,12 @@ name = "percent-encoding"
 version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d4fd5641d01c8f18a23da7b6fe29298ff4b55afcccdf78973b24cf3175fee32e"
+
+[[package]]
+name = "pkg-config"
+version = "0.3.19"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3831453b3449ceb48b6d9c7ad7c96d5ea673e9b470a1dc578c2ce6521230884c"
 
 [[package]]
 name = "ppv-lite86"
@@ -292,6 +355,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cc30b1e1e8c40c121ca33b86c23308a090d19974ef001b4bf6e61fd1a0fb095c"
 
 [[package]]
+name = "strum"
+version = "0.20.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7318c509b5ba57f18533982607f24070a55d353e90d4cae30c467cdb2ad5ac5c"
+
+[[package]]
+name = "strum_macros"
+version = "0.20.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ee8bc6b87a5112aeeab1f4a9f7ab634fe6cbefc4850006df31267f4cfb9e3149"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "syn"
 version = "1.0.70"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -303,10 +384,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "unicode-segmentation"
+version = "1.7.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bb0d2e7be6ae3a5fa87eed5fb451aff96f2573d2694942e40543ae0bbe19c796"
+
+[[package]]
 name = "unicode-xid"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f7fe0bb3479651439c9112f72b6c505038574c9fbb575ed1bf3b797fa39dd564"
+
+[[package]]
+name = "vcpkg"
+version = "0.2.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cbdbff6266a24120518560b5dc983096efb98462e51d0d68169895b237be3e5d"
 
 [[package]]
 name = "wasi"
