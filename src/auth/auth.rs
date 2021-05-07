@@ -1,9 +1,8 @@
-use argon2::{Config, ThreadMode, Variant, Version};
-
 use crate::db::{create_user, get_user, models::NewUser};
 use crate::errors::AuthError;
 use crate::utils;
 use crate::validation::{is_email_valid, is_password_valid};
+
 ///
 pub fn register(email: &str, password: &str) -> Result<(), AuthError> {
     if !is_email_valid(email) {
@@ -18,17 +17,11 @@ pub fn register(email: &str, password: &str) -> Result<(), AuthError> {
         return Err(AuthError::InvalidPassword);
     }
 
-    // has the password
-    let salt = utils::gen_salt();
-
-    let mut config = Config::default();
-    config.variant = Variant::Argon2id;
-
-    let hash = argon2::hash_encoded(password.as_bytes(), salt.as_bytes(), &config).unwrap();
+    let pwh = utils::hash(password);
 
     let u = NewUser {
         email: email,
-        password: &hash,
+        password: &pwh,
     };
 
     create_user(&u);
@@ -44,20 +37,19 @@ pub fn register(email: &str, password: &str) -> Result<(), AuthError> {
 ///
 /// * `password`
 ///
-/// # Notes
-/// Since we don't know the salt, we need to get the users hashed password
-/// from the db so we can check it with argon2
-///
 pub fn login(email: &str, password: &str) -> Result<(), AuthError> {
-    // check that the given email actually exists
+    // get all the user info we need from the database
     let u = get_user(email);
+
     if let Err(_) = u {
+        // to avoid timing attacks, perform a argon2 hash to "waste" time
+        utils::hash(password);
         return Err(AuthError::LoginError);
     }
 
-    let hash = u.unwrap().password;
+    let u = u.unwrap();
     // check the password
-    if argon2::verify_encoded(&hash, password.as_bytes()).unwrap() {
+    if utils::verify_hash(password, &u.password) {
         Ok(())
     } else {
         Err(AuthError::LoginError)
