@@ -8,6 +8,9 @@ pub enum AuthError {
     #[strum(message = "Your login details are incorrect.")]
     LoginError,
 
+    #[strum(message = "Something went wrong during registration.")]
+    RegistrationError,
+
     #[strum(message = "The e-mail address you entered is invalid.")]
     InvalidEmail,
 
