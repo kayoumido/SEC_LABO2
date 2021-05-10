@@ -1,26 +1,39 @@
-use crate::db::{models::User, update_user};
 use google_authenticator::{ErrorCorrectionLevel, GoogleAuthenticator};
 
-pub fn check_2fa(secret: &str, code: &str) -> bool {
+/// Checks that a 2fa code entered by a user is valid
+///
+/// # Arguments
+///
+/// * `secret` - the secret under which the code was genereated
+///
+/// * `code` - the code to check
+///
+pub fn check_code(secret: &str, code: &str) -> bool {
     let auth = GoogleAuthenticator::new();
     auth.verify_code(secret, &code, 30, 0)
 }
 
-pub fn setup_2fa(u: &mut User) -> String {
+/// Generates a secret for the 2fa
+///
+pub fn generate_secret() -> String {
     let auth = GoogleAuthenticator::new();
-    let secret = auth.create_secret(32);
+    // auth.create_secret(32)
+    "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3".to_string()
+}
 
-    let qr_url = auth.qr_code_url(
-        secret.as_str(),
-        "Lab02 Authentication",
-        &u.email,
-        400,
-        400,
-        ErrorCorrectionLevel::High,
-    );
-
-    u.secret_2fa = Some(secret);
-    update_user(u);
-
-    qr_url
+/// Generates the url of QR code for a given secret
+/// With the qr code, the user will be able to add to an authenticator app
+/// e.g. Google Authenticator
+///
+/// # Arguments
+///
+/// * `secret` - the secret to generate the QR from
+///
+/// * `name` - the name of the application
+///
+/// * `title` - the name to set
+///
+pub fn generate_qr(secret: &str, name: &str, title: &str) -> String {
+    let auth = GoogleAuthenticator::new();
+    auth.qr_code_url(secret, name, title, 400, 400, ErrorCorrectionLevel::High)
 }
