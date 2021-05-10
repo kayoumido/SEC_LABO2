@@ -11,7 +11,7 @@ mod errors;
 mod utils;
 mod validation;
 
-use auth::{login, register};
+use auth::{login, register, twofa};
 
 fn ask_for_email() -> String {
     input()
@@ -34,19 +34,35 @@ fn ask_for_password() -> String {
 }
 
 fn main() {
-    // println!("{:?}", f);
-
-    if let Err(e) = register("dorankayoumi@gmail.com", "password") {
+    if let Err(e) = register::register("dorankayoumi@gmail.com", "password") {
         println!("{}", e);
     }
 
-    if let Err(e) = login("dorankayoumi@gmail.com", "password") {
-        println!("{}", e);
-    }
-
-    if let Err(e) = db::get_user("dorankayoumi@gmail.com") {
+    let u = login::login("dorankayoumi@gmail.com", "password");
+    if let Err(e) = u {
         println!("{}", e);
     } else {
-        println!("all gucci")
+        let mut u = u.unwrap();
+        if !u.is_2fa_enabled() {
+            let secret = twofa::generate_secret();
+
+            let qr_url = twofa::generate_qr(&secret, &u.email, "Lab 02 - Authentication");
+            println!("{}", qr_url);
+
+            let code: String = input()
+                .msg("To validate 2FA setup, enter the auth code: ")
+                .get();
+
+            if twofa::check_code(&secret, &code) {
+                // in a real world situation, the secret should be ciphered before being add to the to db
+                u.secret_2fa = Some(secret);
+                db::update_user(&u);
+            } else {
+                println!("2fa error");
+            }
+        }
     }
+
+    println!("finish");
+    // setup_2fa
 }
