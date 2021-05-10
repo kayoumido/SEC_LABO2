@@ -18,17 +18,6 @@ pub fn is_email_valid(email: &str) -> bool {
     RE.is_match(email)
 }
 
-/// Check if a given email is already in use by another account
-///
-/// # Arguments
-///
-/// * `email` - the email to check if it's in use
-///
-pub fn is_email_unused(email: &str) -> bool {
-    println!("{}", email);
-    true
-}
-
 /// Check if a given password respects the apps password policy
 /// i.e. it's at least 8 characters long and shorter than 64
 ///
