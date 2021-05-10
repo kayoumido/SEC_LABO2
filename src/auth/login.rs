@@ -1,4 +1,4 @@
-use crate::db::{get_user, models::User};
+use crate::db::{models::User, repository};
 use crate::errors::AuthError;
 use crate::utils;
 
@@ -12,7 +12,7 @@ use crate::utils;
 ///
 pub fn login(email: &str, password: &str) -> Result<User, AuthError> {
     // get all the user info we need from the database
-    let u = get_user(email);
+    let u = repository::get_user(email);
 
     if let Err(_) = u {
         // to avoid timing attacks, perform a argon2 hash to "waste" time

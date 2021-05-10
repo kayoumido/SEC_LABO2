@@ -1,15 +1,22 @@
-use crate::db::{create_user, get_user, models::NewUser, models::User};
+use crate::db::{models::NewUser, models::User, repository};
 use crate::errors::AuthError;
 use crate::utils;
 use crate::validation::{is_email_valid, is_password_valid};
 
+///
+///
+/// # Arguments
+///
+/// * `email`
+///
+/// * `password`
 ///
 pub fn register(email: &str, password: &str) -> Result<User, AuthError> {
     if !is_email_valid(email) {
         return Err(AuthError::InvalidEmail);
     }
 
-    if let Ok(_) = get_user(email) {
+    if let Ok(_) = repository::get_user(email) {
         return Err(AuthError::EmailUsed);
     }
 
@@ -24,7 +31,7 @@ pub fn register(email: &str, password: &str) -> Result<User, AuthError> {
         password: &pwh,
     };
 
-    let new_u = create_user(&u);
+    let new_u = repository::create_user(&u);
 
     if let Err(_) = new_u {
         return Err(AuthError::RegistrationError);
