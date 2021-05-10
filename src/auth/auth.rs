@@ -1,10 +1,10 @@
-use crate::db::{create_user, get_user, models::NewUser};
+use crate::db::{create_user, get_user, models::NewUser, models::User};
 use crate::errors::AuthError;
 use crate::utils;
 use crate::validation::{is_email_valid, is_password_valid};
 
 ///
-pub fn register(email: &str, password: &str) -> Result<(), AuthError> {
+pub fn register(email: &str, password: &str) -> Result<User, AuthError> {
     if !is_email_valid(email) {
         return Err(AuthError::InvalidEmail);
     }
@@ -24,9 +24,13 @@ pub fn register(email: &str, password: &str) -> Result<(), AuthError> {
         password: &pwh,
     };
 
-    create_user(&u);
+    let new_u = create_user(&u);
 
-    Ok(())
+    if let Err(_) = new_u {
+        return Err(AuthError::RegistrationError);
+    }
+
+    Ok(new_u.unwrap())
 }
 
 ///
@@ -37,7 +41,7 @@ pub fn register(email: &str, password: &str) -> Result<(), AuthError> {
 ///
 /// * `password`
 ///
-pub fn login(email: &str, password: &str) -> Result<(), AuthError> {
+pub fn login(email: &str, password: &str) -> Result<User, AuthError> {
     // get all the user info we need from the database
     let u = get_user(email);
 
@@ -50,7 +54,7 @@ pub fn login(email: &str, password: &str) -> Result<(), AuthError> {
     let u = u.unwrap();
     // check the password
     if utils::verify_hash(password, &u.password) {
-        Ok(())
+        Ok(u)
     } else {
         Err(AuthError::LoginError)
     }
