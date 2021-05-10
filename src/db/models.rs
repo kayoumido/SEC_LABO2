@@ -6,6 +6,8 @@ pub struct User {
     pub email: String,
     pub password: String,
     pub secret_2fa: Option<String>,
+    pub reset_token: Option<String>,
+    pub reset_token_created_at: Option<String>,
 }
 
 #[derive(Insertable, Debug)]
