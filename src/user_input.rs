@@ -3,7 +3,6 @@ use regex::{self, Regex};
 use std::str::FromStr;
 
 use crate::command;
-use crate::utils;
 use crate::validation;
 
 pub fn ask_for_email() -> String {
