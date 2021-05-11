@@ -11,6 +11,9 @@ pub enum AuthError {
     #[strum(message = "Something went wrong during registration.")]
     RegistrationError,
 
+    #[strum(message = "Something went wrong during password reset.")]
+    ResetError,
+
     #[strum(message = "The e-mail address you entered is invalid.")]
     InvalidEmail,
 
