@@ -1,3 +1,5 @@
+use chrono::prelude::*;
+
 use super::schema::users;
 
 #[derive(Queryable, Debug, AsChangeset)]
@@ -28,5 +30,18 @@ impl User {
         } else {
             None
         }
+    }
+
+    pub fn get_reset_token(&self) -> Option<String> {
+        if let Some(s) = self.secret_2fa.clone() {
+            Some(s)
+        } else {
+            None
+        }
+    }
+
+    pub fn set_reset_token(&mut self, token: &str) {
+        self.reset_token = Some(token.to_string());
+        self.reset_token_created_at = Some(Utc::now().to_rfc3339());
     }
 }
