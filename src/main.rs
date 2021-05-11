@@ -35,7 +35,7 @@ fn main() {
                 authenticated_user = process::login_process();
                 break;
             }
-            command::LoginScreenCmd::Reset => process::reset_passwd_process(),
+            command::LoginScreenCmd::Reset => process::reset_password_process(),
             command::LoginScreenCmd::Quit => return,
         }
     }

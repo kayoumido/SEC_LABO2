@@ -1,5 +1,6 @@
 use crate::auth::{login, register, reset, twofa};
 use crate::db::{self, models::User};
+use crate::errors::AuthError;
 use crate::user_input;
 use crate::utils;
 
@@ -41,26 +42,39 @@ pub fn registration_process() {
     }
 }
 
-pub fn reset_passwd_process() {
+pub fn reset_password_process() {
     println!("Password reset:");
     let email = user_input::ask_for_email();
 
     println!("In case a user with that data exists in our database, you'll recieve the token to reset your password");
 
+    // try and generate a reset token for the given email
     if let Err(_) = reset::generate_reset_token(&email) {
-        // exit the process without informing the user to avoid anyforms of attacks
+        // exit the process without informing the user to avoid any forms of attacks
         return;
     }
 
     reset::send_reset_token(&email);
-    let input_token = user_input::ask_for_reset_token();
-    if !reset::check_token(&email, &input_token) {
-        println!("Invalid token");
-        return;
-    }
 
     // ideally all of the following would be handeled somewhere else
     // and the `send_reset_token` would send an email with a url that hte user needs to click to follow th reset instructions
+
+    loop {
+        let input_token = user_input::ask_for_reset_token();
+
+        if let Err(e) = reset::check_token(&email, &input_token) {
+            println!("{}", e);
+
+            match e {
+                AuthError::ExpiredToken => return,
+                AuthError::TokenMismatch => continue,
+                AuthError::ResetError => return,
+                _ => panic!("Unexpected return value."),
+            }
+        }
+
+        break;
+    }
 
     // get the user from the db
     let u = db::repository::get_user(&email);

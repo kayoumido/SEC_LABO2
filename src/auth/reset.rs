@@ -4,7 +4,7 @@ use crate::db::repository;
 use crate::errors::AuthError;
 use crate::utils;
 
-const CODE_VALIDITY_MIN: i64 = 15;
+const CODE_VALIDITY_MIN: i64 = 0;
 
 /// EXPLAIN HOW TO TEST WHEN USING MOCK
 pub fn generate_reset_token(email: &str) -> Result<(), AuthError> {
@@ -34,9 +34,9 @@ pub fn change_password(email: &str, new_passwd: &str) -> Result<(), AuthError> {
     if let Err(_) = u {
         return Err(AuthError::ResetError);
     }
+    let mut u = u.unwrap();
 
     // update the users password
-    let mut u = u.unwrap();
     u.set_password(&utils::hash(new_passwd));
 
     if let Err(_) = repository::update_user(&u) {
@@ -46,15 +46,24 @@ pub fn change_password(email: &str, new_passwd: &str) -> Result<(), AuthError> {
     Ok(())
 }
 
-/// TESTABLE
-pub fn check_token(email: &str, token: &str) -> bool {
-    let u = repository::get_user(email).unwrap();
+pub fn check_token(email: &str, token: &str) -> Result<(), AuthError> {
+    let u = repository::get_user(email);
+    if let Err(_) = u {
+        return Err(AuthError::ResetError);
+    }
+    let u = u.unwrap();
+
     let token_created_at =
         DateTime::parse_from_rfc3339(u.get_reset_token_created_at().unwrap().as_str()).unwrap();
     let now = DateTime::parse_from_rfc3339(Utc::now().to_rfc3339().as_str()).unwrap();
 
-    (now - token_created_at).num_minutes() <= CODE_VALIDITY_MIN
-        && u.get_reset_token().unwrap() == token
+    if (now - token_created_at).num_minutes() > CODE_VALIDITY_MIN {
+        Err(AuthError::ExpiredToken)
+    } else if u.get_reset_token().unwrap() == token {
+        Err(AuthError::TokenMismatch)
+    } else {
+        Ok(())
+    }
 }
 
 pub fn send_reset_token(email: &str) {

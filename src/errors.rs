@@ -22,6 +22,12 @@ pub enum AuthError {
 
     #[strum(message = "This e-mail address is already used for another account.")]
     EmailUsed,
+
+    #[strum(message = "Reset token is expired.")]
+    ExpiredToken,
+
+    #[strum(message = "You've entered an ivalid token.")]
+    TokenMismatch,
 }
 
 impl fmt::Display for AuthError {
