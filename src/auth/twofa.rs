@@ -17,8 +17,7 @@ pub fn check_code(secret: &str, code: &str) -> bool {
 ///
 pub fn generate_secret() -> String {
     let auth = GoogleAuthenticator::new();
-    // auth.create_secret(32)
-    "I3VFM3JKMNDJCDH5BMBEEQAW6KJ6NOE3".to_string()
+    auth.create_secret(32)
 }
 
 /// Generates the url of QR code for a given secret
