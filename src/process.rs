@@ -117,15 +117,17 @@ pub fn enable_2fa_process(u: &mut User) {
     u.set_secret_2fa(Some(secret));
     if let Err(_) = db::repository::update_user(&u) {
         println!("Two-factor authentication failed.");
-        return;
-    };
+
+        // just to be safe, revert changes
+        u.set_secret_2fa(None);
+    }
 }
 
 pub fn disable_2fa_process(u: &mut User) {
     // quick check that the user doesn't already have 2fa activated
     // you never know...
     if !u.is_2fa_enabled() {
-        println!("Two-factor authentication already disabled");
+        println!("Two-factor authentication is already disabled");
         return;
     }
 
@@ -145,15 +147,17 @@ pub fn disable_2fa_process(u: &mut User) {
     u.set_secret_2fa(None);
     if let Err(_) = db::repository::update_user(&u) {
         println!("Two-factor authentication failed.");
-        return;
-    };
+
+        // just to be safe, revert changes
+        u.set_secret_2fa(Some(secret));
+    }
 }
 
 fn confirm_2fa_code(secret: &str) {
     loop {
         let auth_code = user_input::ask_for_authentication_code();
         if !twofa::check_code(secret, &auth_code) {
-            println!("Two-factor authentication failed.");
+            println!("Incorrect authentication code.");
             continue;
         }
         break;
