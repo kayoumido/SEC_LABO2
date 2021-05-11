@@ -46,13 +46,13 @@ fn main() {
 
         println!("Welcome {}", authenticated_user.get_email());
         match user_input::ask_for_user_profile_cmd() {
-            command::UserProfileCmd::Enable2FA => {
+            command::ProfileScreenCmd::Enable2FA => {
                 process::enable_2fa_process(&mut authenticated_user)
             }
-            command::UserProfileCmd::Disable2FA => {
+            command::ProfileScreenCmd::Disable2FA => {
                 process::disable_2fa_process(&mut authenticated_user)
             }
-            command::UserProfileCmd::Logout => break,
+            command::ProfileScreenCmd::Logout => break,
         }
     }
 }

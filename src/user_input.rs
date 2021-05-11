@@ -51,7 +51,7 @@ pub fn ask_for_login_screen_cmd() -> command::LoginScreenCmd {
     }
 }
 
-pub fn ask_for_user_profile_cmd() -> command::UserProfileCmd {
+pub fn ask_for_user_profile_cmd() -> command::ProfileScreenCmd {
     let err_msg = "Unknown command";
     loop {
         let input: String = input()
@@ -59,12 +59,12 @@ pub fn ask_for_user_profile_cmd() -> command::UserProfileCmd {
             .add_err_test(move |x: &String| check_cmd_syntax(&x), err_msg)
             .get();
 
-        if let Err(_) = command::UserProfileCmd::from_str(&input) {
+        if let Err(_) = command::ProfileScreenCmd::from_str(&input) {
             println!("{}", err_msg);
             continue;
         }
 
-        return command::UserProfileCmd::from_str(&input).unwrap();
+        return command::ProfileScreenCmd::from_str(&input).unwrap();
     }
 }
 

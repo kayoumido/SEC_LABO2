@@ -24,7 +24,7 @@ pub enum LoginScreenCmd {
 }
 
 #[derive(PartialEq, Debug, EnumString)]
-pub enum UserProfileCmd {
+pub enum ProfileScreenCmd {
     #[strum(
         serialize = "Enable two factor",
         serialize = "enable two factor",
@@ -80,23 +80,23 @@ mod test {
     #[rstest(
         input,
         expected,
-        case("Enable two factor", Ok(UserProfileCmd::Enable2FA)),
-        case("enable two factor", Ok(UserProfileCmd::Enable2FA)),
-        case("1", Ok(UserProfileCmd::Enable2FA)),
-        case("Disable two factor", Ok(UserProfileCmd::Disable2FA)),
-        case("disable two factor", Ok(UserProfileCmd::Disable2FA)),
-        case("2", Ok(UserProfileCmd::Disable2FA)),
-        case("Logout", Ok(UserProfileCmd::Logout)),
-        case("logout", Ok(UserProfileCmd::Logout)),
-        case("3", Ok(UserProfileCmd::Logout)),
+        case("Enable two factor", Ok(ProfileScreenCmd::Enable2FA)),
+        case("enable two factor", Ok(ProfileScreenCmd::Enable2FA)),
+        case("1", Ok(ProfileScreenCmd::Enable2FA)),
+        case("Disable two factor", Ok(ProfileScreenCmd::Disable2FA)),
+        case("disable two factor", Ok(ProfileScreenCmd::Disable2FA)),
+        case("2", Ok(ProfileScreenCmd::Disable2FA)),
+        case("Logout", Ok(ProfileScreenCmd::Logout)),
+        case("logout", Ok(ProfileScreenCmd::Logout)),
+        case("3", Ok(ProfileScreenCmd::Logout)),
         case("UnknownCmd", Err(strum::ParseError::VariantNotFound)),
         case("5", Err(strum::ParseError::VariantNotFound)),
         ::trace
     )]
     fn test_user_profile_cmd_from_string(
         input: &str,
-        expected: Result<UserProfileCmd, strum::ParseError>,
+        expected: Result<ProfileScreenCmd, strum::ParseError>,
     ) {
-        assert_eq!(UserProfileCmd::from_str(input), expected);
+        assert_eq!(ProfileScreenCmd::from_str(input), expected);
     }
 }
