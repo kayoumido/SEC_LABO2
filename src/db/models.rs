@@ -58,7 +58,7 @@ impl User {
     }
 
     pub fn get_reset_token(&self) -> Option<String> {
-        if let Some(s) = self.secret_2fa.clone() {
+        if let Some(s) = self.reset_token.clone() {
             Some(s)
         } else {
             None
@@ -69,6 +69,7 @@ impl User {
         self.reset_token = Some(token.to_string());
         self.reset_token_created_at = Some(Utc::now().to_rfc3339());
     }
+
     pub fn get_reset_token_created_at(&self) -> Option<String> {
         if let Some(s) = self.reset_token_created_at.clone() {
             Some(s)
