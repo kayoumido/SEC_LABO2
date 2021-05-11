@@ -16,7 +16,6 @@ pub fn login_process() -> User {
         }
 
         let u = u.unwrap();
-
         if u.is_2fa_enabled() {
             let secret = u.get_secret_2fa().unwrap();
             confirm_2fa_code(&secret);
@@ -162,9 +161,12 @@ fn confirm_2fa_code(secret: &str) {
 }
 
 fn confirm_identity_with_passwd(user_passwd: &str) {
-    let passwd = user_input::ask_for_password();
-    if !utils::verify_hash(&passwd, user_passwd) {
-        println!("Two-factor authentication already enabled");
+    loop {
+        let passwd = user_input::ask_for_password();
+        if !utils::verify_hash(&passwd, user_passwd) {
+            println!("Incorrect password.");
+            continue;
+        }
         return;
     }
 }

@@ -33,7 +33,6 @@ pub fn register(email: &str, password: &str) -> Result<(), AuthError> {
     };
 
     let new_u = repository::create_user(&u);
-
     if let Err(_) = new_u {
         return Err(AuthError::RegistrationError);
     }
