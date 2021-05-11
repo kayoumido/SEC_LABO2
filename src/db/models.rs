@@ -25,6 +25,8 @@ impl User {
         self.secret_2fa != None
     }
 
+    // GETTERS & SETTERS
+
     pub fn get_id(&self) -> i32 {
         self.id
     }
@@ -76,5 +78,53 @@ impl User {
         } else {
             None
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::User;
+
+    /**
+     * Note: Only the "complicated" functions were tested.
+     *       This means that getters/setters for simple fields aren't tested
+     *       e.g. get_email & set_email
+     */
+
+    #[test]
+    fn test_is_2fa_enabled() {
+        let mut dummy = User {
+            id: 1,
+            email: "dummy@test.lo".to_string(),
+            password: "hashedpasswd".to_string(),
+            secret_2fa: Some("2fasecret".to_string()),
+            reset_token: None,
+            reset_token_created_at: None,
+        };
+
+        assert_eq!(dummy.is_2fa_enabled(), true);
+
+        dummy.set_secret_2fa(None);
+        assert_eq!(dummy.is_2fa_enabled(), false);
+    }
+
+    #[test]
+    fn test_set_reset_token() {
+        let mut dummy = User {
+            id: 1,
+            email: "dummy@test.lo".to_string(),
+            password: "hashedpasswd".to_string(),
+            secret_2fa: Some("2fasecret".to_string()),
+            reset_token: None,
+            reset_token_created_at: None,
+        };
+
+        assert_eq!(dummy.get_reset_token(), None);
+        assert_eq!(dummy.get_reset_token_created_at(), None);
+
+        dummy.set_reset_token("token");
+
+        assert_ne!(dummy.get_reset_token(), None);
+        assert_ne!(dummy.get_reset_token_created_at(), None);
     }
 }
