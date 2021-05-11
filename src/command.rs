@@ -17,7 +17,9 @@ pub enum LoginScreenCmd {
     Login,
     #[strum(serialize = "Register", serialize = "register", serialize = "2")]
     Register,
-    #[strum(serialize = "Quit", serialize = "quit", serialize = "3")]
+    #[strum(serialize = "Reset", serialize = "reset", serialize = "3")]
+    Reset,
+    #[strum(serialize = "Quit", serialize = "quit", serialize = "4")]
     Quit,
 }
 
@@ -27,8 +29,6 @@ pub enum UserProfileCmd {
     Enable2FA,
     #[strum(serialize = "Disable 2FA", serialize = "disable 2fa", serialize = "2")]
     Disable2FA,
-    #[strum(serialize = "Reset", serialize = "reset", serialize = "3")]
-    Reset,
-    #[strum(serialize = "Quit", serialize = "quit", serialize = "4")]
-    Quit,
+    #[strum(serialize = "Logout", serialize = "logout", serialize = "3")]
+    Logout,
 }
