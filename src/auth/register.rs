@@ -1,4 +1,4 @@
-use crate::db::{models::NewUser, models::User, repository};
+use crate::db::{models::NewUser, repository};
 use crate::errors::AuthError;
 use crate::utils;
 use crate::validation::{is_email_valid, is_password_valid};
@@ -11,7 +11,8 @@ use crate::validation::{is_email_valid, is_password_valid};
 ///
 /// * `password`
 ///
-pub fn register(email: &str, password: &str) -> Result<User, AuthError> {
+/// EXPLAIN HOW TO TEST WHEN USING MOCK
+pub fn register(email: &str, password: &str) -> Result<(), AuthError> {
     if !is_email_valid(email) {
         return Err(AuthError::InvalidEmail);
     }
@@ -37,5 +38,5 @@ pub fn register(email: &str, password: &str) -> Result<User, AuthError> {
         return Err(AuthError::RegistrationError);
     }
 
-    Ok(new_u.unwrap())
+    Ok(())
 }

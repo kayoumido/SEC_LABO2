@@ -9,18 +9,20 @@ pub fn get_user(e: &str) -> Result<User, Error> {
     users.filter(email.eq(e)).first::<User>(&conn)
 }
 
-pub fn create_user(u: &NewUser) -> Result<User, Error> {
+pub fn create_user(u: &NewUser) -> Result<(), Error> {
     let conn = establish_connection();
     if let Err(e) = insert_into(users).values(u).execute(&conn) {
         return Err(e);
     }
 
-    Ok(get_user(u.email).unwrap())
+    Ok(())
 }
 
-pub fn update_user(u: &User) {
+pub fn update_user(u: &User) -> Result<(), Error> {
     let conn = establish_connection();
     if let Err(e) = update(users.filter(id.eq(u.id))).set(u).execute(&conn) {
-        println!("{}", e);
+        return Err(e);
     }
+
+    Ok(())
 }

@@ -10,6 +10,7 @@ use crate::utils;
 ///
 /// * `password`
 ///
+/// EXPLAIN HOW TO TEST WHEN USING MOCK
 pub fn login(email: &str, password: &str) -> Result<User, AuthError> {
     // get all the user info we need from the database
     let u = repository::get_user(email);
