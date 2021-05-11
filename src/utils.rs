@@ -30,9 +30,3 @@ pub fn gen_token() -> String {
         .map(char::from)
         .collect()
 }
-
-pub fn check_cmd_syntax(s: &str) -> bool {
-    let re: Regex = Regex::new(r"^([A-Za-z]+)$|^(\d+)$").unwrap();
-
-    re.is_match(&s)
-}
