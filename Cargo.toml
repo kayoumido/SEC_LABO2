@@ -18,3 +18,4 @@ diesel = { version = "1.4.4", features = ["sqlite"] }
 dotenv = "0.15.0"
 rand = "0.8.3"
 sodiumoxide = "0.2.6"
+chrono = "0.4.19"
