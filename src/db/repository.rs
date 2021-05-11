@@ -20,7 +20,10 @@ pub fn create_user(u: &NewUser) -> Result<(), Error> {
 
 pub fn update_user(u: &User) -> Result<(), Error> {
     let conn = establish_connection();
-    if let Err(e) = update(users.filter(id.eq(u.id))).set(u).execute(&conn) {
+    if let Err(e) = update(users.filter(id.eq(u.get_id())))
+        .set(u)
+        .execute(&conn)
+    {
         return Err(e);
     }
 

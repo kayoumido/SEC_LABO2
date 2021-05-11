@@ -23,7 +23,7 @@ pub fn login(email: &str, password: &str) -> Result<User, AuthError> {
 
     let u = u.unwrap();
     // check the password
-    if utils::verify_hash(password, &u.password) {
+    if utils::verify_hash(password, &u.get_password()) {
         Ok(u)
     } else {
         Err(AuthError::LoginError)

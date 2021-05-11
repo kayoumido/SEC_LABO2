@@ -18,7 +18,7 @@ pub fn login_process() -> User {
         let u = u.unwrap();
 
         if u.is_2fa_enabled() {
-            let secret = u.get_2fa_secret().unwrap();
+            let secret = u.get_secret_2fa().unwrap();
             confirm_2fa_code(&secret);
         }
 
@@ -68,7 +68,7 @@ pub fn reset_passwd_process() {
 
     println!("Confirm your identity:");
     // we can safely get the users 2FA secret
-    let secret = u.get_2fa_secret().unwrap();
+    let secret = u.get_secret_2fa().unwrap();
     confirm_2fa_code(&secret);
 
     let passwd = user_input::ask_for_password_with_policy_check();
@@ -89,7 +89,7 @@ pub fn enable_2fa_process(u: &mut User) {
     // by asking for hes/his password
     println!("Confirm your identity:");
     let passwd = user_input::ask_for_password();
-    if !utils::verify_hash(&passwd, &u.password) {
+    if !utils::verify_hash(&passwd, &u.get_password()) {
         println!("Confirmation failed");
         return;
     }
@@ -97,7 +97,7 @@ pub fn enable_2fa_process(u: &mut User) {
     // generate the 2FA secret & the QR code so the user can add the secret
     // to her/his 2FA authentication app
     let secret = twofa::generate_secret();
-    let qr_url = twofa::generate_qr(&secret, &u.email, "Lab 02 - Authentication");
+    let qr_url = twofa::generate_qr(&secret, &u.get_email(), "Lab 02 - Authentication");
     println!(
         "Scan the following QR code with your favorite Authentication app: {}\n",
         qr_url
@@ -109,7 +109,7 @@ pub fn enable_2fa_process(u: &mut User) {
     confirm_2fa_code(&secret);
 
     // update the database with the new secret
-    u.secret_2fa = Some(secret);
+    u.set_secret_2fa(Some(secret));
     if let Err(_) = db::repository::update_user(&u) {
         println!("Two-factor authentication failed.");
         return;
@@ -141,7 +141,7 @@ pub fn disable_2fa_process(u: &mut User) {
     // by asking for hers/his password
     println!("Confirm your identity (1):");
     let passwd = user_input::ask_for_password();
-    if !utils::verify_hash(&passwd, &u.password) {
+    if !utils::verify_hash(&passwd, &u.get_password()) {
         println!("Two-factor authentication already enabled");
         return;
     }
@@ -150,13 +150,13 @@ pub fn disable_2fa_process(u: &mut User) {
     // to confirm she/he correctly setup the 2FA
     println!("Confirm your identity (2):");
     // we can safely get the users 2FA secret
-    let secret = u.get_2fa_secret().unwrap();
+    let secret = u.get_secret_2fa().unwrap();
     confirm_2fa_code(&secret);
 
     // NOTE: For some reason this doesn't remove the secret from the DB
     // TODO: Fix
     // update the database with the changes
-    u.secret_2fa = None;
+    u.set_secret_2fa(None);
     if let Err(_) = db::repository::update_user(&u) {
         println!("Two-factor authentication failed.");
         return;

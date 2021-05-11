@@ -44,7 +44,7 @@ fn main() {
     loop {
         user_profile_screen();
 
-        println!("Welcome {}", authenticated_user.email);
+        println!("Welcome {}", authenticated_user.get_email());
         match user_input::ask_for_user_profile_cmd() {
             command::UserProfileCmd::Enable2FA => {
                 process::enable_2fa_process(&mut authenticated_user)

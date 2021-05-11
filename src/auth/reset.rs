@@ -37,7 +37,7 @@ pub fn change_password(email: &str, new_passwd: &str) -> Result<(), AuthError> {
 
     // update the users password
     let mut u = u.unwrap();
-    u.password = utils::hash(new_passwd);
+    u.set_password(&utils::hash(new_passwd));
 
     if let Err(_) = repository::update_user(&u) {
         return Err(AuthError::ResetError);
@@ -50,10 +50,11 @@ pub fn change_password(email: &str, new_passwd: &str) -> Result<(), AuthError> {
 pub fn check_token(email: &str, token: &str) -> bool {
     let u = repository::get_user(email).unwrap();
     let token_created_at =
-        DateTime::parse_from_rfc3339(u.reset_token_created_at.unwrap().as_str()).unwrap();
+        DateTime::parse_from_rfc3339(u.get_reset_token_created_at().unwrap().as_str()).unwrap();
     let now = DateTime::parse_from_rfc3339(Utc::now().to_rfc3339().as_str()).unwrap();
 
-    (now - token_created_at).num_minutes() <= CODE_VALIDITY_MIN && u.reset_token.unwrap() == token
+    (now - token_created_at).num_minutes() <= CODE_VALIDITY_MIN
+        && u.get_reset_token().unwrap() == token
 }
 
 pub fn send_reset_token(email: &str) {
@@ -64,7 +65,7 @@ pub fn send_reset_token(email: &str) {
     println!("to: {}", email);
     println!("subject: Lab 02 - Auth Reset token");
     println!("message:");
-    println!("Here is your reset token: {}", u.reset_token.unwrap());
+    println!("Here is your reset token: {}", u.get_reset_token().unwrap());
     println!("Kind regards");
     println!();
 }
