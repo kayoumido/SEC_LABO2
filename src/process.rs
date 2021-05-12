@@ -1,5 +1,6 @@
 use crate::auth::{login, register, reset, twofa};
-use crate::db::{self, models::User};
+use crate::db::models::User;
+use crate::db::repository::{SQliteUserRepository, UserRepository};
 use crate::errors::AuthError;
 use crate::user_input;
 use crate::utils;
@@ -77,7 +78,7 @@ pub fn reset_password_process() {
     }
 
     // get the user from the db
-    let u = db::repository::get_user(&email);
+    let u = SQliteUserRepository::get_user(&email);
     if let Err(e) = u {
         // something bad happened (e.g. the db is down)
         // Note: The problem can't come from the non existance of the user
@@ -129,7 +130,7 @@ pub fn enable_2fa_process(u: &mut User) {
 
     // update the database with the new secret
     u.set_secret_2fa(Some(secret));
-    if let Err(_) = db::repository::update_user(&u) {
+    if let Err(_) = SQliteUserRepository::update_user(&u) {
         println!("Two-factor authentication failed.");
 
         // just to be safe, revert changes
@@ -159,7 +160,7 @@ pub fn disable_2fa_process(u: &mut User) {
     // TODO: Fix
     // update the database with the changes
     u.set_secret_2fa(None);
-    if let Err(_) = db::repository::update_user(&u) {
+    if let Err(_) = SQliteUserRepository::update_user(&u) {
         println!("Two-factor authentication failed.");
 
         // just to be safe, revert changes

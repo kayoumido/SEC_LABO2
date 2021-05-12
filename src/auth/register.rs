@@ -1,4 +1,5 @@
-use crate::db::{models::NewUser, repository};
+use crate::db::models::NewUser;
+use crate::db::repository::{SQliteUserRepository, UserRepository};
 use crate::errors::AuthError;
 use crate::utils;
 use crate::validation::{is_email_valid, is_password_valid};
@@ -17,7 +18,7 @@ pub fn register(email: &str, password: &str) -> Result<(), AuthError> {
         return Err(AuthError::InvalidEmail);
     }
 
-    if let Ok(_) = repository::get_user(email) {
+    if let Ok(_) = SQliteUserRepository::get_user(email) {
         return Err(AuthError::EmailUsed);
     }
 
@@ -32,7 +33,7 @@ pub fn register(email: &str, password: &str) -> Result<(), AuthError> {
         password: &pwh,
     };
 
-    let new_u = repository::create_user(&u);
+    let new_u = SQliteUserRepository::create_user(&u);
     if let Err(_) = new_u {
         return Err(AuthError::RegistrationError);
     }

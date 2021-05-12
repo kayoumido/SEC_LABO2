@@ -6,34 +6,44 @@ use super::schema::users::dsl::*;
 
 use crate::errors::UserDBError;
 
-pub fn get_user(e: &str) -> Result<User, UserDBError> {
-    let conn = establish_connection();
-    let res = users.filter(email.eq(e)).first::<User>(&conn);
-
-    if let Err(_) = res {
-        Err(UserDBError::GetUserError)
-    } else {
-        Ok(res.unwrap())
-    }
+pub trait UserRepository {
+    fn get_user(e: &str) -> Result<User, UserDBError>;
+    fn create_user(u: &NewUser) -> Result<(), UserDBError>;
+    fn update_user(u: &User) -> Result<(), UserDBError>;
 }
 
-pub fn create_user(u: &NewUser) -> Result<(), UserDBError> {
-    let conn = establish_connection();
-    if let Err(_) = insert_into(users).values(u).execute(&conn) {
-        return Err(UserDBError::CreateUserError);
+pub struct SQliteUserRepository {}
+
+impl UserRepository for SQliteUserRepository {
+    fn get_user(e: &str) -> Result<User, UserDBError> {
+        let conn = establish_connection();
+        let res = users.filter(email.eq(e)).first::<User>(&conn);
+
+        if let Err(_) = res {
+            Err(UserDBError::GetUserError)
+        } else {
+            Ok(res.unwrap())
+        }
     }
 
-    Ok(())
-}
+    fn create_user(u: &NewUser) -> Result<(), UserDBError> {
+        let conn = establish_connection();
+        if let Err(_) = insert_into(users).values(u).execute(&conn) {
+            return Err(UserDBError::CreateUserError);
+        }
 
-pub fn update_user(u: &User) -> Result<(), UserDBError> {
-    let conn = establish_connection();
-    if let Err(_) = update(users.filter(id.eq(u.get_id())))
-        .set(u)
-        .execute(&conn)
-    {
-        return Err(UserDBError::UpdateUserError);
+        Ok(())
     }
 
-    Ok(())
+    fn update_user(u: &User) -> Result<(), UserDBError> {
+        let conn = establish_connection();
+        if let Err(_) = update(users.filter(id.eq(u.get_id())))
+            .set(u)
+            .execute(&conn)
+        {
+            return Err(UserDBError::UpdateUserError);
+        }
+
+        Ok(())
+    }
 }

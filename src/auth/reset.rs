@@ -1,6 +1,6 @@
 use chrono::prelude::*;
 
-use crate::db::repository;
+use crate::db::repository::{SQliteUserRepository, UserRepository};
 use crate::errors::AuthError;
 use crate::utils;
 
@@ -14,7 +14,7 @@ pub fn generate_reset_token(email: &str) -> Result<(), AuthError> {
     let token = utils::gen_token();
 
     // try and find the user in the db
-    let u = repository::get_user(email);
+    let u = SQliteUserRepository::get_user(email);
     if let Err(_) = u {
         return Err(AuthError::ResetError);
     }
@@ -22,7 +22,7 @@ pub fn generate_reset_token(email: &str) -> Result<(), AuthError> {
     // update the user with the reset token
     let mut u = u.unwrap();
     u.set_reset_token(&token);
-    if let Err(_) = repository::update_user(&u) {
+    if let Err(_) = SQliteUserRepository::update_user(&u) {
         return Err(AuthError::ResetError);
     }
 
@@ -30,7 +30,7 @@ pub fn generate_reset_token(email: &str) -> Result<(), AuthError> {
 }
 
 pub fn change_password(email: &str, new_passwd: &str) -> Result<(), AuthError> {
-    let u = repository::get_user(email);
+    let u = SQliteUserRepository::get_user(email);
     if let Err(_) = u {
         return Err(AuthError::ResetError);
     }
@@ -39,7 +39,7 @@ pub fn change_password(email: &str, new_passwd: &str) -> Result<(), AuthError> {
     // update the users password
     u.set_password(&utils::hash(new_passwd));
 
-    if let Err(_) = repository::update_user(&u) {
+    if let Err(_) = SQliteUserRepository::update_user(&u) {
         return Err(AuthError::ResetError);
     }
 
@@ -47,7 +47,7 @@ pub fn change_password(email: &str, new_passwd: &str) -> Result<(), AuthError> {
 }
 
 pub fn check_token(email: &str, token: &str) -> Result<(), AuthError> {
-    let u = repository::get_user(email);
+    let u = SQliteUserRepository::get_user(email);
     if let Err(_) = u {
         return Err(AuthError::ResetError);
     }
@@ -67,7 +67,7 @@ pub fn check_token(email: &str, token: &str) -> Result<(), AuthError> {
 }
 
 pub fn send_reset_token(email: &str) {
-    let u = repository::get_user(email).unwrap();
+    let u = SQliteUserRepository::get_user(email).unwrap();
 
     println!();
     println!("from: lab02.auth@heig-vd.lo");

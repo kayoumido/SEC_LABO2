@@ -1,4 +1,5 @@
-use crate::db::{models::User, repository};
+use crate::db::models::User;
+use crate::db::repository::{SQliteUserRepository, UserRepository};
 use crate::errors::AuthError;
 use crate::utils;
 
@@ -13,7 +14,7 @@ use crate::utils;
 /// EXPLAIN HOW TO TEST WHEN USING MOCK
 pub fn login(email: &str, password: &str) -> Result<User, AuthError> {
     // get all the user info we need from the database
-    let u = repository::get_user(email);
+    let u = SQliteUserRepository::get_user(email);
 
     if let Err(_) = u {
         // to avoid timing attacks, perform a argon2 hash to "waste" time
