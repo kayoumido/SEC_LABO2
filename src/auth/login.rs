@@ -46,3 +46,22 @@ fn _login(email: &str, passwd: &str, repository: &dyn UserRepository) -> Result<
         Err(AuthError::LoginError)
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::db::repository::MockSQliteUserRepository;
+    use crate::errors::UserDBError;
+
+    #[test]
+    fn test_login_with_unknown_user() {
+        let mut mock = MockSQliteUserRepository::new();
+
+        mock.expect_get_user()
+            .returning(|_| Err(UserDBError::GetUserError));
+
+        let res = _login("email@email.test", "password", &mock);
+
+        assert_eq!(Err(AuthError::LoginError), res);
+    }
+}
