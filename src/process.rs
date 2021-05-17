@@ -167,7 +167,7 @@ fn _enable_2fa_process(u: &mut User, repository: &dyn UserRepository) {
     // Before adding the 2FA, confirm the users identity
     // by asking for hes/his password
     println!("Confirm your identity:");
-    confirm_identity_with_passwd(&u.get_password());
+    confirm_identity_with_password(&u.get_password());
 
     // generate the 2FA secret & the QR code so the user can add the secret
     // to her/his 2FA authentication app
@@ -214,7 +214,7 @@ fn _disable_2fa_process(u: &mut User, repository: &dyn UserRepository) {
     // Before touching the 2FA, confirm the users identity
     // by asking for hers/his password
     println!("Confirm your identity:");
-    confirm_identity_with_passwd(&u.get_password());
+    confirm_identity_with_password(&u.get_password());
 
     // Ask the user to input a authentication code
     // to confirm she/he correctly setup the 2FA
@@ -256,7 +256,7 @@ fn confirm_2fa_code(secret: &str) {
 ///
 /// * `user_passwd_hash` - the users password hash stored in the db
 ///
-fn confirm_identity_with_passwd(user_passwd_hash: &str) {
+fn confirm_identity_with_password(user_passwd_hash: &str) {
     loop {
         let passwd = user_input::ask_for_password();
         if !utils::verify_hash(&passwd, user_passwd_hash) {

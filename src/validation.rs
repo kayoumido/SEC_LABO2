@@ -31,10 +31,10 @@ pub fn is_email_valid(email: &str) -> bool {
 ///
 /// # Arguments
 ///
-/// * `password` - password to check if it respects the policy
+/// * `passwd` - password to check if it respects the policy
 ///
-pub fn is_password_valid(password: &str) -> bool {
-    (8..65).contains(&password.len())
+pub fn is_password_valid(passwd: &str) -> bool {
+    (8..65).contains(&passwd.len())
 }
 
 #[cfg(test)]
