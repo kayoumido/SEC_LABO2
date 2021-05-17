@@ -17,7 +17,13 @@ pub enum LoginScreenCmd {
     Login,
     #[strum(serialize = "Register", serialize = "register", serialize = "2")]
     Register,
-    #[strum(serialize = "Reset", serialize = "reset", serialize = "3")]
+    #[strum(
+        serialize = "Reset",
+        serialize = "reset",
+        serialize = "Reset password",
+        serialize = "reset password",
+        serialize = "3"
+    )]
     Reset,
     #[strum(serialize = "Quit", serialize = "quit", serialize = "4")]
     Quit,
@@ -26,15 +32,19 @@ pub enum LoginScreenCmd {
 #[derive(PartialEq, Debug, EnumString)]
 pub enum ProfileScreenCmd {
     #[strum(
-        serialize = "Enable two factor",
-        serialize = "enable two factor",
+        serialize = "Enable",
+        serialize = "enable",
+        serialize = "Enable two factor authentication",
+        serialize = "enable two factor authentication",
         serialize = "1"
     )]
     Enable2FA,
 
     #[strum(
-        serialize = "Disable two factor",
-        serialize = "disable two factor",
+        serialize = "Disable",
+        serialize = "disable",
+        serialize = "Disable two factor authentication",
+        serialize = "disable two factor authentication",
         serialize = "2"
     )]
     Disable2FA,
@@ -62,6 +72,8 @@ mod test {
         case("2", Ok(LoginScreenCmd::Register)),
         case("Reset", Ok(LoginScreenCmd::Reset)),
         case("reset", Ok(LoginScreenCmd::Reset)),
+        case("Reset password", Ok(LoginScreenCmd::Reset)),
+        case("reset password", Ok(LoginScreenCmd::Reset)),
         case("3", Ok(LoginScreenCmd::Reset)),
         case("Quit", Ok(LoginScreenCmd::Quit)),
         case("quit", Ok(LoginScreenCmd::Quit)),
@@ -80,11 +92,15 @@ mod test {
     #[rstest(
         input,
         expected,
-        case("Enable two factor", Ok(ProfileScreenCmd::Enable2FA)),
-        case("enable two factor", Ok(ProfileScreenCmd::Enable2FA)),
+        case("Enable", Ok(ProfileScreenCmd::Enable2FA)),
+        case("enable", Ok(ProfileScreenCmd::Enable2FA)),
+        case("Enable two factor authentication", Ok(ProfileScreenCmd::Enable2FA)),
+        case("enable two factor authentication", Ok(ProfileScreenCmd::Enable2FA)),
         case("1", Ok(ProfileScreenCmd::Enable2FA)),
-        case("Disable two factor", Ok(ProfileScreenCmd::Disable2FA)),
-        case("disable two factor", Ok(ProfileScreenCmd::Disable2FA)),
+        case("Disable", Ok(ProfileScreenCmd::Disable2FA)),
+        case("disable", Ok(ProfileScreenCmd::Disable2FA)),
+        case("Disable two factor authentication", Ok(ProfileScreenCmd::Disable2FA)),
+        case("disable two factor authentication", Ok(ProfileScreenCmd::Disable2FA)),
         case("2", Ok(ProfileScreenCmd::Disable2FA)),
         case("Logout", Ok(ProfileScreenCmd::Logout)),
         case("logout", Ok(ProfileScreenCmd::Logout)),
