@@ -6,7 +6,7 @@ use crate::user_input;
 use crate::utils;
 
 pub fn login_process() -> User {
-    println!("Login:");
+    println!("\nLogin:");
     loop {
         let email = user_input::ask_for_email();
         let passwd = user_input::ask_for_password();
@@ -28,7 +28,7 @@ pub fn login_process() -> User {
 }
 
 pub fn registration_process() {
-    println!("Registration:");
+    println!("\nRegistration:");
     loop {
         let email = user_input::ask_for_email();
         let passwd = user_input::ask_for_password_with_policy_check();
@@ -47,17 +47,19 @@ pub fn reset_password_process() {
     let repository = SQliteUserRepository {};
     _reset_password_process(&repository)
 }
+
 pub fn enable_2fa_process(u: &mut User) {
     let repository = SQliteUserRepository {};
     _enable_2fa_process(u, &repository)
 }
+
 pub fn disable_2fa_process(u: &mut User) {
     let repository = SQliteUserRepository {};
     _disable_2fa_process(u, &repository)
 }
 
 fn _reset_password_process(repository: &dyn UserRepository) {
-    println!("Password reset:");
+    println!("\nPassword reset:");
     let email = user_input::ask_for_email();
 
     println!("In case a user with that data exists in our database, you'll recieve the token to reset your password");
@@ -115,6 +117,7 @@ fn _reset_password_process(repository: &dyn UserRepository) {
 }
 
 fn _enable_2fa_process(u: &mut User, repository: &dyn UserRepository) {
+    println!("\nEnabling Two-factor authentication");
     // quick check that the user doesn't already have 2fa activated
     // you never know...
     if u.is_2fa_enabled() {
@@ -152,6 +155,7 @@ fn _enable_2fa_process(u: &mut User, repository: &dyn UserRepository) {
 }
 
 fn _disable_2fa_process(u: &mut User, repository: &dyn UserRepository) {
+    println!("\nDisabling Two-factor authentication");
     // quick check that the user doesn't already have 2fa activated
     // you never know...
     if !u.is_2fa_enabled() {

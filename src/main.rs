@@ -13,17 +13,30 @@ mod validation;
 
 use db::models::User;
 
-fn login_screen() {}
+fn login_screen() {
+    println!();
+    println!("Login screen");
+    println!("---------");
+    println!("1. Login");
+    println!("2. Register");
+    println!("3. Reset password");
+    println!("4. Quit");
+}
 
-fn user_profile_screen() {}
+fn user_profile_screen(user_email: &str) {
+    println!();
+    println!("{}' profile", user_email);
+    println!("---------");
+    println!("1. Enable two factor authentication");
+    println!("2. Disable two factor authentication");
+    println!("3. Logout");
+}
 
 fn main() {
     // Login screen
     let mut authenticated_user: User;
     loop {
         login_screen();
-
-        println!("Login screen");
         match user_input::ask_for_login_screen_cmd() {
             command::LoginScreenCmd::Login => {
                 authenticated_user = process::login_process();
@@ -42,9 +55,7 @@ fn main() {
 
     // Profil screen
     loop {
-        user_profile_screen();
-
-        println!("Welcome {}", authenticated_user.get_email());
+        user_profile_screen(&authenticated_user.get_email());
         match user_input::ask_for_user_profile_cmd() {
             command::ProfileScreenCmd::Enable2FA => {
                 process::enable_2fa_process(&mut authenticated_user)
