@@ -21,6 +21,18 @@ pub struct NewUser<'a> {
 }
 
 impl User {
+    /// Only exists for the unit tests
+    pub fn new(email: &str, passwd: &str) -> Self {
+        Self {
+            id: 1,
+            email: email.to_string(),
+            password: passwd.to_string(),
+            secret_2fa: None,
+            reset_token: None,
+            reset_token_created_at: None,
+        }
+    }
+
     pub fn is_2fa_enabled(&self) -> bool {
         self.secret_2fa != None
     }

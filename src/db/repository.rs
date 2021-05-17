@@ -45,6 +45,10 @@ pub trait UserRepository {
 
 pub struct SQliteUserRepository {}
 
+#[cfg(test)]
+use mockall::{automock, predicate::*};
+
+#[cfg_attr(test, automock)]
 /// Implementation of the `UserRepository` with SQLite as a storage
 impl UserRepository for SQliteUserRepository {
     fn get_user(&self, e: &str) -> Result<User, UserDBError> {
