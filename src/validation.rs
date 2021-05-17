@@ -1,3 +1,11 @@
+/*!
+* Here can be found all the functions to validate user input.
+* e.g. check that a inputed password matches the password policy
+*
+* # Author
+* Doran Kayoumi <doran.kayoumi@heig-vd.ch>
+*/
+
 use lazy_static::lazy_static;
 use regex::{self, Regex};
 

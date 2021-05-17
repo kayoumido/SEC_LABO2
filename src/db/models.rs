@@ -72,6 +72,8 @@ impl User {
         self.reset_token_created_at = Some(Utc::now().to_rfc3339());
     }
 
+    /// Note: No setter was defined for `reset_token_created_at` because
+    /// it's only set when a new token is set.
     pub fn get_reset_token_created_at(&self) -> Option<String> {
         if let Some(s) = self.reset_token_created_at.clone() {
             Some(s)

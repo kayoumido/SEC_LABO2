@@ -1,3 +1,10 @@
+/*!
+ * Database configurations
+ *
+ * # Author
+ * Doran Kayoumi <doran.kayoumi@heig-vd.ch>
+ */
+
 pub mod models;
 pub mod repository;
 pub mod schema;
@@ -6,6 +13,7 @@ use diesel::prelude::*;
 use dotenv::dotenv;
 use std::env;
 
+/// Establish a connection to a SQLite database with the url set in a `.env` file
 fn establish_connection() -> SqliteConnection {
     dotenv().ok();
 

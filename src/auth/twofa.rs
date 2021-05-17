@@ -1,3 +1,10 @@
+/*!
+ * Functions related to 2FA
+ *
+ * # Author
+ * Doran Kayoumi <doran.kayoumi@heig-vd.ch>
+ */
+
 use google_authenticator::{ErrorCorrectionLevel, GoogleAuthenticator};
 
 /// Checks that a 2fa code entered by a user is valid

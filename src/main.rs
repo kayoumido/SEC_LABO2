@@ -1,3 +1,23 @@
+/*!
+ * Second labratory for the Secure Coding course at the HEIG-VD.
+ *
+ * This project (crate?) is an implementation of a simple authentication system.
+ * Features:
+ *  - Login
+ *  - Registration
+ *  - Reset password
+ *  - Enable/Disable 2FA
+ *
+ *
+ * # Author
+ * Doran Kayoumi <doran.kayoumi@heig-vd.ch>
+ *
+ * # Note
+ * Some functions weren't tested because they require mocking and/or were using
+ * the `sodiumoxide` which for some reason doesn't like to be tested.
+ * Details on how they would be tested can be found in the README.md
+ */
+
 #[macro_use]
 extern crate diesel;
 extern crate dotenv;

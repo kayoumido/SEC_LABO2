@@ -1,3 +1,11 @@
+/*!
+ * This file contains all the `utility` functions that may be needed in
+ * multiple other functions.
+ *
+ * # Author
+ * Doran Kayoumi <doran.kayoumi@heig-vd.ch>
+ */
+
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 
@@ -65,19 +73,4 @@ mod test {
 
         assert_ne!(pwh1, pwh2);
     }
-
-    // #[test]
-    // fn test_verify_hash() {
-    //     let pw1 = "passwd";
-    //     let pw2 = "verySecurePassword";
-
-    //     let pwh1 = hash(pw1);
-    //     let pwh2 = hash(pw2);
-
-    //     assert_eq!(verify_hash(&pwh1, pw1), true);
-    //     assert_eq!(verify_hash(&pwh2, pw2), true);
-
-    //     assert_eq!(verify_hash(&pwh1, pw2), true);
-    //     assert_eq!(verify_hash(&pwh2, pw1), true);
-    // }
 }

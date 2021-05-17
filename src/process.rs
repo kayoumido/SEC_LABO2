@@ -1,3 +1,10 @@
+/*!
+ * All of the authentication processes used in the system
+ *
+ * # Author
+ * Doran Kayoumi <doran.kayoumi@heig-vd.ch>
+ */
+
 use crate::auth::{login, register, reset, twofa};
 use crate::db::models::User;
 use crate::db::repository::{SQliteUserRepository, UserRepository};
@@ -5,6 +12,8 @@ use crate::errors::AuthError;
 use crate::user_input;
 use crate::utils;
 
+/// Login process
+///
 pub fn login_process() -> User {
     println!("\nLogin:");
     loop {
@@ -27,6 +36,8 @@ pub fn login_process() -> User {
     }
 }
 
+/// Registration process
+///
 pub fn registration_process() {
     println!("\nRegistration:");
     loop {
@@ -43,21 +54,40 @@ pub fn registration_process() {
     }
 }
 
+/// Public function for the password reset process
+/// See `_reset_password_process` for more info
+///
 pub fn reset_password_process() {
     let repository = SQliteUserRepository {};
     _reset_password_process(&repository)
 }
 
+/// Public function for the 2FA enable process
+/// See `enable_2fa_process` for more info
+///
 pub fn enable_2fa_process(u: &mut User) {
     let repository = SQliteUserRepository {};
     _enable_2fa_process(u, &repository)
 }
 
+/// Public function for the 2FA disable process
+/// See `disable_2fa_process` for more info
+///
 pub fn disable_2fa_process(u: &mut User) {
     let repository = SQliteUserRepository {};
     _disable_2fa_process(u, &repository)
 }
 
+/// Password reset process
+///
+/// # Note
+/// Since this function requires to interact with the db via a `UserRepository` the implementation was
+/// made private so we don't need to worry about it when calling the function
+///
+/// # Arguments
+///
+/// * `repository` - the user repository to interact with
+///
 fn _reset_password_process(repository: &dyn UserRepository) {
     println!("\nPassword reset:");
     let email = user_input::ask_for_email();
@@ -116,6 +146,15 @@ fn _reset_password_process(repository: &dyn UserRepository) {
     }
 }
 
+/// 2FA enable process
+/// # Note
+/// Since this function requires to interact with the db via a `UserRepository` the implementation was
+/// made private so we don't need to worry about it when calling the function
+///
+/// # Arguments
+///
+/// * `repository` - the user repository to interact with
+///
 fn _enable_2fa_process(u: &mut User, repository: &dyn UserRepository) {
     println!("\nEnabling Two-factor authentication");
     // quick check that the user doesn't already have 2fa activated
@@ -154,6 +193,15 @@ fn _enable_2fa_process(u: &mut User, repository: &dyn UserRepository) {
     }
 }
 
+/// 2FA diable process
+/// # Note
+/// Since this function requires to interact with the db via a `UserRepository` the implementation was
+/// made private so we don't need to worry about it when calling the function
+///
+/// # Arguments
+///
+/// * `repository` - the user repository to interact with
+///
 fn _disable_2fa_process(u: &mut User, repository: &dyn UserRepository) {
     println!("\nDisabling Two-factor authentication");
     // quick check that the user doesn't already have 2fa activated
@@ -185,6 +233,12 @@ fn _disable_2fa_process(u: &mut User, repository: &dyn UserRepository) {
     }
 }
 
+/// Asks the user for her/his 2FA code and validates it
+///
+/// # Arguments
+///
+/// * `secret` - the secret under which the code is generated
+///
 fn confirm_2fa_code(secret: &str) {
     loop {
         let auth_code = user_input::ask_for_authentication_code();
@@ -196,10 +250,16 @@ fn confirm_2fa_code(secret: &str) {
     }
 }
 
-fn confirm_identity_with_passwd(user_passwd: &str) {
+/// Confirms the users identity by askign for her/his password
+///
+/// # Arguments
+///
+/// * `user_passwd_hash` - the users password hash stored in the db
+///
+fn confirm_identity_with_passwd(user_passwd_hash: &str) {
     loop {
         let passwd = user_input::ask_for_password();
-        if !utils::verify_hash(&passwd, user_passwd) {
+        if !utils::verify_hash(&passwd, user_passwd_hash) {
             println!("Incorrect password.");
             continue;
         }
