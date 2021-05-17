@@ -4,7 +4,7 @@ use crate::db::repository::{SQliteUserRepository, UserRepository};
 use crate::errors::AuthError;
 use crate::utils;
 
-const CODE_VALIDITY_MIN: i64 = 0;
+const CODE_VALIDITY_MIN: i64 = 15;
 
 pub fn generate_reset_token(email: &str) -> Result<(), AuthError> {
     let repository = SQliteUserRepository {};
@@ -87,7 +87,7 @@ fn _check_token(
 
     if (now - token_created_at).num_minutes() > CODE_VALIDITY_MIN {
         Err(AuthError::ExpiredToken)
-    } else if u.get_reset_token().unwrap() == token {
+    } else if u.get_reset_token().unwrap() != token {
         Err(AuthError::TokenMismatch)
     } else {
         Ok(())
