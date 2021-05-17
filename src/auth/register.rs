@@ -1,8 +1,12 @@
-use crate::db::models::NewUser;
 use crate::db::repository::{SQliteUserRepository, UserRepository};
 use crate::errors::AuthError;
 use crate::utils;
 use crate::validation::{is_email_valid, is_password_valid};
+
+pub fn register(email: &str, password: &str) -> Result<(), AuthError> {
+    let repository = SQliteUserRepository {};
+    _register(email, password, &repository)
+}
 
 ///
 ///
@@ -13,12 +17,16 @@ use crate::validation::{is_email_valid, is_password_valid};
 /// * `password`
 ///
 /// EXPLAIN HOW TO TEST WHEN USING MOCK
-pub fn register(email: &str, password: &str) -> Result<(), AuthError> {
+fn _register(
+    email: &str,
+    password: &str,
+    repository: &dyn UserRepository,
+) -> Result<(), AuthError> {
     if !is_email_valid(email) {
         return Err(AuthError::InvalidEmail);
     }
 
-    if let Ok(_) = SQliteUserRepository::get_user(email) {
+    if let Ok(_) = repository.get_user(email) {
         return Err(AuthError::EmailUsed);
     }
 
@@ -28,12 +36,7 @@ pub fn register(email: &str, password: &str) -> Result<(), AuthError> {
 
     let pwh = utils::hash(password);
 
-    let u = NewUser {
-        email: email,
-        password: &pwh,
-    };
-
-    let new_u = SQliteUserRepository::create_user(&u);
+    let new_u = repository.create_user(email, &pwh);
     if let Err(_) = new_u {
         return Err(AuthError::RegistrationError);
     }

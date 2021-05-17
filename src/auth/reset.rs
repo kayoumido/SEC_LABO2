@@ -6,15 +6,35 @@ use crate::utils;
 
 const CODE_VALIDITY_MIN: i64 = 0;
 
-/// EXPLAIN HOW TO TEST WHEN USING MOCK
 pub fn generate_reset_token(email: &str) -> Result<(), AuthError> {
+    let repository = SQliteUserRepository {};
+    _generate_reset_token(email, &repository)
+}
+
+pub fn change_password(email: &str, new_passwd: &str) -> Result<(), AuthError> {
+    let repository = SQliteUserRepository {};
+    _change_password(email, new_passwd, &repository)
+}
+
+pub fn check_token(email: &str, token: &str) -> Result<(), AuthError> {
+    let repository = SQliteUserRepository {};
+    _check_token(email, token, &repository)
+}
+
+pub fn send_reset_token(email: &str) {
+    let repository = SQliteUserRepository {};
+    _send_reset_token(email, &repository)
+}
+
+/// EXPLAIN HOW TO TEST WHEN USING MOCK
+fn _generate_reset_token(email: &str, repository: &dyn UserRepository) -> Result<(), AuthError> {
     // generate the reset token
     // note: A token is generated even though the user doesn't exists
     //       this is done to not leak the info that the user doesn't exist.
     let token = utils::gen_token();
 
     // try and find the user in the db
-    let u = SQliteUserRepository::get_user(email);
+    let u = repository.get_user(email);
     if let Err(_) = u {
         return Err(AuthError::ResetError);
     }
@@ -22,15 +42,19 @@ pub fn generate_reset_token(email: &str) -> Result<(), AuthError> {
     // update the user with the reset token
     let mut u = u.unwrap();
     u.set_reset_token(&token);
-    if let Err(_) = SQliteUserRepository::update_user(&u) {
+    if let Err(_) = repository.update_user(&u) {
         return Err(AuthError::ResetError);
     }
 
     Ok(())
 }
 
-pub fn change_password(email: &str, new_passwd: &str) -> Result<(), AuthError> {
-    let u = SQliteUserRepository::get_user(email);
+fn _change_password(
+    email: &str,
+    new_passwd: &str,
+    repository: &dyn UserRepository,
+) -> Result<(), AuthError> {
+    let u = repository.get_user(email);
     if let Err(_) = u {
         return Err(AuthError::ResetError);
     }
@@ -39,15 +63,19 @@ pub fn change_password(email: &str, new_passwd: &str) -> Result<(), AuthError> {
     // update the users password
     u.set_password(&utils::hash(new_passwd));
 
-    if let Err(_) = SQliteUserRepository::update_user(&u) {
+    if let Err(_) = repository.update_user(&u) {
         return Err(AuthError::ResetError);
     }
 
     Ok(())
 }
 
-pub fn check_token(email: &str, token: &str) -> Result<(), AuthError> {
-    let u = SQliteUserRepository::get_user(email);
+fn _check_token(
+    email: &str,
+    token: &str,
+    repository: &dyn UserRepository,
+) -> Result<(), AuthError> {
+    let u = repository.get_user(email);
     if let Err(_) = u {
         return Err(AuthError::ResetError);
     }
@@ -66,8 +94,8 @@ pub fn check_token(email: &str, token: &str) -> Result<(), AuthError> {
     }
 }
 
-pub fn send_reset_token(email: &str) {
-    let u = SQliteUserRepository::get_user(email).unwrap();
+fn _send_reset_token(email: &str, repository: &dyn UserRepository) {
+    let u = repository.get_user(email).unwrap();
 
     println!();
     println!("from: lab02.auth@heig-vd.lo");

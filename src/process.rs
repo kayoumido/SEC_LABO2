@@ -44,6 +44,19 @@ pub fn registration_process() {
 }
 
 pub fn reset_password_process() {
+    let repository = SQliteUserRepository {};
+    _reset_password_process(&repository)
+}
+pub fn enable_2fa_process(u: &mut User) {
+    let repository = SQliteUserRepository {};
+    _enable_2fa_process(u, &repository)
+}
+pub fn disable_2fa_process(u: &mut User) {
+    let repository = SQliteUserRepository {};
+    _disable_2fa_process(u, &repository)
+}
+
+fn _reset_password_process(repository: &dyn UserRepository) {
     println!("Password reset:");
     let email = user_input::ask_for_email();
 
@@ -78,7 +91,7 @@ pub fn reset_password_process() {
     }
 
     // get the user from the db
-    let u = SQliteUserRepository::get_user(&email);
+    let u = repository.get_user(&email);
     if let Err(e) = u {
         // something bad happened (e.g. the db is down)
         // Note: The problem can't come from the non existance of the user
@@ -101,7 +114,7 @@ pub fn reset_password_process() {
     }
 }
 
-pub fn enable_2fa_process(u: &mut User) {
+fn _enable_2fa_process(u: &mut User, repository: &dyn UserRepository) {
     // quick check that the user doesn't already have 2fa activated
     // you never know...
     if u.is_2fa_enabled() {
@@ -130,7 +143,7 @@ pub fn enable_2fa_process(u: &mut User) {
 
     // update the database with the new secret
     u.set_secret_2fa(Some(secret));
-    if let Err(_) = SQliteUserRepository::update_user(&u) {
+    if let Err(_) = repository.update_user(&u) {
         println!("Two-factor authentication failed.");
 
         // just to be safe, revert changes
@@ -138,7 +151,7 @@ pub fn enable_2fa_process(u: &mut User) {
     }
 }
 
-pub fn disable_2fa_process(u: &mut User) {
+fn _disable_2fa_process(u: &mut User, repository: &dyn UserRepository) {
     // quick check that the user doesn't already have 2fa activated
     // you never know...
     if !u.is_2fa_enabled() {
@@ -160,7 +173,7 @@ pub fn disable_2fa_process(u: &mut User) {
     // TODO: Fix
     // update the database with the changes
     u.set_secret_2fa(None);
-    if let Err(_) = SQliteUserRepository::update_user(&u) {
+    if let Err(_) = repository.update_user(&u) {
         println!("Two-factor authentication failed.");
 
         // just to be safe, revert changes
