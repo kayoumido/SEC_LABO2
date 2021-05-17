@@ -127,6 +127,12 @@ fn _check_token(
     }
     let u = u.unwrap();
 
+    // check if the user has a reset token set
+    // this should never happen but you never know
+    if u.get_reset_token() == None {
+        return Err(AuthError::ResetError);
+    }
+
     let token_created_at =
         DateTime::parse_from_rfc3339(u.get_reset_token_created_at().unwrap().as_str()).unwrap();
     let now = DateTime::parse_from_rfc3339(Utc::now().to_rfc3339().as_str()).unwrap();
@@ -159,4 +165,116 @@ fn _send_reset_token(email: &str, repository: &dyn UserRepository) {
     println!("Here is your reset token: {}", u.get_reset_token().unwrap());
     println!("Kind regards");
     println!();
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::db::models::User;
+    use crate::db::repository::MockSQliteUserRepository;
+    use crate::errors::UserDBError;
+
+    #[test]
+    fn test_token_generation_with_unknown_user() {
+        let mut mock = MockSQliteUserRepository::new();
+
+        mock.expect_get_user()
+            .returning(|_| Err(UserDBError::GetUserError));
+
+        let res = _generate_reset_token("email@email.test", &mock);
+
+        assert_eq!(Err(AuthError::ResetError), res);
+    }
+
+    #[test]
+    fn test_token_generation_with_known_user() {
+        let mut mock = MockSQliteUserRepository::new();
+
+        mock.expect_get_user()
+            .returning(|e| Ok(User::new(e, "passwd_hash")));
+        mock.expect_update_user().returning(|_| Ok(()));
+
+        let res = _generate_reset_token("email@email.test", &mock);
+
+        assert_eq!(Ok(()), res);
+    }
+
+    #[test]
+    fn test_password_change_with_unknown_user() {
+        let mut mock = MockSQliteUserRepository::new();
+
+        mock.expect_get_user()
+            .returning(|_| Err(UserDBError::GetUserError));
+
+        let res = _change_password("email@email.test", "password", &mock);
+
+        assert_eq!(Err(AuthError::ResetError), res);
+    }
+
+    #[test]
+    fn test_password_change_with_known_user() {
+        let mut mock = MockSQliteUserRepository::new();
+
+        mock.expect_get_user()
+            .returning(|e| Ok(User::new(e, "passwd_hash")));
+        mock.expect_update_user().returning(|_| Ok(()));
+
+        let res = _change_password("email@email.test", "password", &mock);
+
+        assert_eq!(Ok(()), res);
+    }
+
+    #[test]
+    fn test_check_token_with_unknown_user() {
+        let mut mock = MockSQliteUserRepository::new();
+
+        mock.expect_get_user()
+            .returning(|_| Err(UserDBError::GetUserError));
+
+        let res = _check_token("email@email.test", "token", &mock);
+
+        assert_eq!(Err(AuthError::ResetError), res);
+    }
+
+    #[test]
+    fn test_check_token_with_known_user_and_no_reset_token() {
+        let mut mock = MockSQliteUserRepository::new();
+
+        mock.expect_get_user()
+            .returning(|e| Ok(User::new(e, "passwd_hash")));
+
+        let res = _check_token("email@email.test", "token", &mock);
+
+        assert_eq!(Err(AuthError::ResetError), res);
+    }
+
+    #[test]
+    fn test_check_token_with_known_user_and_reset_token() {
+        let mut mock = MockSQliteUserRepository::new();
+
+        mock.expect_get_user().returning(|e| {
+            let mut u = User::new(e, "passwd_hash");
+            u.set_reset_token("token");
+            Ok(u)
+        });
+
+        let res = _check_token("email@email.test", "token", &mock);
+
+        assert_eq!(Ok(()), res);
+    }
+
+    #[test]
+    fn test_check_token_with_known_user_and_wrong_reset_token() {
+        let mut mock = MockSQliteUserRepository::new();
+
+        mock.expect_get_user().returning(|e| {
+            let mut u = User::new(e, "passwd_hash");
+            u.set_reset_token("token");
+            Ok(u)
+        });
+
+        let res = _check_token("email@email.test", "wrongtoken", &mock);
+
+        assert_eq!(Err(AuthError::TokenMismatch), res);
+    }
 }
