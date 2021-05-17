@@ -2,7 +2,7 @@ use chrono::prelude::*;
 
 use super::schema::users;
 
-#[derive(Queryable, Debug, AsChangeset)]
+#[derive(Queryable, Debug, AsChangeset, PartialEq)]
 #[changeset_options(treat_none_as_null = "true")]
 pub struct User {
     id: i32,
