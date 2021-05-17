@@ -17,7 +17,7 @@ Next, you need to create an `.env` file. An example file is provided so you can 
 $ cp .env.example .env
 ```
 
-If you want, you can change the `DATABASE_URL` to whatever you want.
+If you want, you can change the `DATABASE_URL` to whatever you want, just update the `.env` file.
 
 Now you can create the database by running the following
 
@@ -25,7 +25,7 @@ Now you can create the database by running the following
 $ diesel database setup
 ```
 
-And voilà
+And voilà!
 
 ### Manually
 
