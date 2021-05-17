@@ -56,6 +56,8 @@ mod test {
         case("verySecurePassword", true),
         case("DK7jqu5SXWeYwg$C", true),
         case("!%3T!Xd6", true),
+        case("!%3T!X d6", true),
+        case("パスワード 柔道", true),
         case(
             "oufxdHfqd2emvQpsfkZh3iH8Z6KHnniqj8qRpHh!f#G#jC$kwsTS*tNmYyM8tcxY",
             true
