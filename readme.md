@@ -2,6 +2,7 @@
 > Author: Doran Kayoumi
 
 ## Setup
+> Note: For the purpose of the labratory, I've included the database already setup. So you only need to do a `cargo run`.
 
 ### Diesel CLI
 
